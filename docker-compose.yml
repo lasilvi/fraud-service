@@ -1,0 +1,7 @@
+services:
+  fraud-service:
+    build:
+      context: ../fraud-service
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
