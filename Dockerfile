@@ -4,9 +4,9 @@ WORKDIR /workspace
 COPY pom.xml .
 COPY src ./src
 
-RUN mvn -B -DskipTests clean package
+RUN mvn -B clean verify
 
-FROM eclipse-temurin:17-jre
+FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 
 COPY --from=builder /workspace/target/*.jar app.jar
