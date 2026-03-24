@@ -1,4 +1,6 @@
 package com.fraud.infrastructure.controller.dto;
 
-public record FraudEvaluationRequest() {
+import java.math.BigDecimal;
+
+public record FraudEvaluationRequest(BigDecimal amount, String transactionCountry, String userCountry) {
 }
