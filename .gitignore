@@ -4,3 +4,6 @@ USER_STORIES.md
 commit.instructions.md
 target/
 .vscode/
+.git
+node_modules
+*.log
