@@ -5,11 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fraud.application.port.out.FraudEvaluationAuditPort;
+import com.fraud.application.port.out.FraudThresholdProvider;
 import com.fraud.domain.model.FraudEvaluationResult;
 import com.fraud.domain.model.FraudReason;
 import com.fraud.domain.model.RiskLevel;
 import com.fraud.domain.model.Transaction;
-import com.fraud.infrastructure.config.FraudProperties;
 import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
 
@@ -17,10 +17,9 @@ class EvaluateTransactionUseCaseTest {
 
     @Test
     void shouldEvaluateAndPersistWhenRuleIsTriggered() {
-        FraudProperties properties = new FraudProperties();
-        properties.setThreshold(BigDecimal.valueOf(15000));
+        FraudThresholdProvider thresholdProvider = () -> BigDecimal.valueOf(15000);
         InMemoryAuditPort auditPort = new InMemoryAuditPort();
-        EvaluateTransactionUseCase useCase = new EvaluateTransactionUseCase(properties, auditPort);
+        EvaluateTransactionUseCase useCase = new EvaluateTransactionUseCase(thresholdProvider, auditPort);
 
         Transaction transaction = new Transaction(BigDecimal.valueOf(20000), "US", "US");
         FraudEvaluationResult result = useCase.execute(transaction);
@@ -34,10 +33,9 @@ class EvaluateTransactionUseCaseTest {
 
     @Test
     void shouldEvaluateLowRiskAndPersistWhenNoRuleIsTriggered() {
-        FraudProperties properties = new FraudProperties();
-        properties.setThreshold(BigDecimal.valueOf(15000));
+        FraudThresholdProvider thresholdProvider = () -> BigDecimal.valueOf(15000);
         InMemoryAuditPort auditPort = new InMemoryAuditPort();
-        EvaluateTransactionUseCase useCase = new EvaluateTransactionUseCase(properties, auditPort);
+        EvaluateTransactionUseCase useCase = new EvaluateTransactionUseCase(thresholdProvider, auditPort);
 
         Transaction transaction = new Transaction(BigDecimal.valueOf(3000), "CO", "CO");
         FraudEvaluationResult result = useCase.execute(transaction);
