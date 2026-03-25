@@ -2,9 +2,9 @@ package com.fraud.infrastructure.controller;
 
 import com.fraud.application.usecase.EvaluateTransactionUseCase;
 import com.fraud.domain.model.FraudEvaluationResult;
-import com.fraud.domain.model.Transaction;
 import com.fraud.infrastructure.controller.dto.FraudEvaluationRequest;
 import com.fraud.infrastructure.controller.dto.FraudEvaluationResponse;
+import com.fraud.infrastructure.controller.mapper.FraudEvaluationRequestMapper;
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,15 +18,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class FraudEvaluationController {
 
 	private final EvaluateTransactionUseCase evaluateTransactionUseCase;
+	private final FraudEvaluationRequestMapper requestMapper;
 
-	public FraudEvaluationController(EvaluateTransactionUseCase evaluateTransactionUseCase) {
+	public FraudEvaluationController(
+		EvaluateTransactionUseCase evaluateTransactionUseCase,
+		FraudEvaluationRequestMapper requestMapper
+	) {
 		this.evaluateTransactionUseCase = evaluateTransactionUseCase;
+		this.requestMapper = requestMapper;
 	}
 
 	@PostMapping("/evaluate")
 	public ResponseEntity<FraudEvaluationResponse> evaluate(@RequestBody FraudEvaluationRequest request) {
-		Transaction transaction = new Transaction(request.amount(), request.transactionCountry(), request.userCountry());
-		FraudEvaluationResult result = evaluateTransactionUseCase.execute(transaction);
+		FraudEvaluationResult result = evaluateTransactionUseCase.execute(requestMapper.toDomain(request));
 
 		return ResponseEntity.ok(FraudEvaluationResponse.fromDomain(result));
 	}
