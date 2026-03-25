@@ -8,9 +8,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.Instant;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "fraud_evaluations")
+@Getter
+@Setter
 public class FraudEvaluationJpaEntity {
 
 	@Id
@@ -37,68 +41,4 @@ public class FraudEvaluationJpaEntity {
 
 	@Column(nullable = false)
 	private Instant evaluatedAt;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public BigDecimal getAmount() {
-		return amount;
-	}
-
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
-	}
-
-	public String getTransactionCountry() {
-		return transactionCountry;
-	}
-
-	public void setTransactionCountry(String transactionCountry) {
-		this.transactionCountry = transactionCountry;
-	}
-
-	public String getUserCountry() {
-		return userCountry;
-	}
-
-	public void setUserCountry(String userCountry) {
-		this.userCountry = userCountry;
-	}
-
-	public boolean isSuspicious() {
-		return suspicious;
-	}
-
-	public void setSuspicious(boolean suspicious) {
-		this.suspicious = suspicious;
-	}
-
-	public String getRiskLevel() {
-		return riskLevel;
-	}
-
-	public void setRiskLevel(String riskLevel) {
-		this.riskLevel = riskLevel;
-	}
-
-	public String getReasons() {
-		return reasons;
-	}
-
-	public void setReasons(String reasons) {
-		this.reasons = reasons;
-	}
-
-	public Instant getEvaluatedAt() {
-		return evaluatedAt;
-	}
-
-	public void setEvaluatedAt(Instant evaluatedAt) {
-		this.evaluatedAt = evaluatedAt;
-	}
 }
