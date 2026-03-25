@@ -45,7 +45,7 @@ public class FraudEvaluationController {
 
 	@GetMapping("/evaluations")
 	public ResponseEntity<List<FraudEvaluationHistoryResponse>> getRecentEvaluations(
-		@RequestParam(required = false) Integer limit
+		@RequestParam(name = "limit", required = false) Integer limit
 	) {
 		List<FraudEvaluationHistoryResponse> response = getFraudEvaluationHistoryUseCase.execute(limit)
 			.stream()
