@@ -58,11 +58,23 @@ docker build -t fraud-service:local .
 docker run --rm -p 8080:8080 fraud-service:local
 ```
 
+If you run it this way, set PostgreSQL connection variables:
+
+```bash
+docker run --rm -p 8080:8080 \
+	-e DB_URL=jdbc:postgresql://host.docker.internal:5432/frauddb \
+	-e DB_USERNAME=fraud \
+	-e DB_PASSWORD=fraud \
+	fraud-service:local
+```
+
 ### Option 2: Docker Compose
 
 ```bash
 docker compose up --build
 ```
+
+`docker compose` starts both services: fraud API and PostgreSQL.
 
 ### Stop Container
 

@@ -1,7 +1,28 @@
 services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: fraud-postgres
+    environment:
+      POSTGRES_DB: frauddb
+      POSTGRES_USER: fraud
+      POSTGRES_PASSWORD: fraud
+    ports:
+      - "5432:5432"
+    volumes:
+      - fraud-postgres-data:/var/lib/postgresql/data
+
   fraud-service:
     build:
-      context: ../fraud-service
+      context: .
       dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/frauddb
+      DB_USERNAME: fraud
+      DB_PASSWORD: fraud
     ports:
       - "8080:8080"
+
+volumes:
+  fraud-postgres-data:

@@ -1,5 +1,6 @@
 package com.fraud.application.usecase;
 
+import com.fraud.application.port.out.FraudEvaluationAuditPort;
 import com.fraud.domain.model.FraudEvaluationResult;
 import com.fraud.domain.model.FraudReason;
 import com.fraud.domain.model.Transaction;
@@ -15,10 +16,15 @@ import org.springframework.stereotype.Service;
 public class EvaluateTransactionUseCase {
 
 	private final FraudProperties fraudProperties;
+	private final FraudEvaluationAuditPort fraudEvaluationAuditPort;
 	private final FraudDomainService fraudDomainService;
 
-	public EvaluateTransactionUseCase(FraudProperties fraudProperties) {
+	public EvaluateTransactionUseCase(
+		FraudProperties fraudProperties,
+		FraudEvaluationAuditPort fraudEvaluationAuditPort
+	) {
 		this.fraudProperties = fraudProperties;
+		this.fraudEvaluationAuditPort = fraudEvaluationAuditPort;
 		this.fraudDomainService = new FraudDomainService();
 	}
 
@@ -30,6 +36,8 @@ public class EvaluateTransactionUseCase {
 		amountRule.evaluate(transaction.amount()).ifPresent(reasons::add);
 		locationRule.evaluate(transaction.userCountry(), transaction.transactionCountry()).ifPresent(reasons::add);
 
-		return fraudDomainService.evaluate(reasons);
+		FraudEvaluationResult result = fraudDomainService.evaluate(reasons);
+		fraudEvaluationAuditPort.save(transaction, result);
+		return result;
 	}
 }
