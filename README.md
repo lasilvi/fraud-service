@@ -47,6 +47,18 @@ Expected response format:
 }
 ```
 
+### List Recent Evaluations
+
+- Method: `GET`
+- URL: `/api/v1/fraud/evaluations`
+- Query param: `limit` (optional, default 20, max 100)
+
+Example:
+
+```bash
+curl "http://localhost:8080/api/v1/fraud/evaluations?limit=10"
+```
+
 ## Run The Project
 
 ### Option 1: Docker (recommended)

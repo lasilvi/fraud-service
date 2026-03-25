@@ -1,15 +1,19 @@
 package com.fraud.infrastructure.controller;
 
 import com.fraud.application.usecase.EvaluateTransactionUseCase;
+import com.fraud.application.usecase.GetFraudEvaluationHistoryUseCase;
 import com.fraud.domain.model.FraudEvaluationResult;
+import com.fraud.infrastructure.controller.dto.FraudEvaluationHistoryResponse;
 import com.fraud.infrastructure.controller.dto.FraudEvaluationRequest;
 import com.fraud.infrastructure.controller.dto.FraudEvaluationResponse;
 import com.fraud.infrastructure.controller.mapper.FraudEvaluationRequestMapper;
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,13 +23,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class FraudEvaluationController {
 
 	private final EvaluateTransactionUseCase evaluateTransactionUseCase;
+	private final GetFraudEvaluationHistoryUseCase getFraudEvaluationHistoryUseCase;
 	private final FraudEvaluationRequestMapper requestMapper;
 
 	public FraudEvaluationController(
 		EvaluateTransactionUseCase evaluateTransactionUseCase,
+		GetFraudEvaluationHistoryUseCase getFraudEvaluationHistoryUseCase,
 		FraudEvaluationRequestMapper requestMapper
 	) {
 		this.evaluateTransactionUseCase = evaluateTransactionUseCase;
+		this.getFraudEvaluationHistoryUseCase = getFraudEvaluationHistoryUseCase;
 		this.requestMapper = requestMapper;
 	}
 
@@ -34,6 +41,18 @@ public class FraudEvaluationController {
 		FraudEvaluationResult result = evaluateTransactionUseCase.execute(requestMapper.toDomain(request));
 
 		return ResponseEntity.ok(FraudEvaluationResponse.fromDomain(result));
+	}
+
+	@GetMapping("/evaluations")
+	public ResponseEntity<List<FraudEvaluationHistoryResponse>> getRecentEvaluations(
+		@RequestParam(required = false) Integer limit
+	) {
+		List<FraudEvaluationHistoryResponse> response = getFraudEvaluationHistoryUseCase.execute(limit)
+			.stream()
+			.map(FraudEvaluationHistoryResponse::fromApplication)
+			.toList();
+
+		return ResponseEntity.ok(response);
 	}
 
 	@GetMapping("/health")
