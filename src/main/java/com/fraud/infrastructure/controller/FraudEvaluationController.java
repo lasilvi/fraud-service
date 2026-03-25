@@ -5,6 +5,7 @@ import com.fraud.domain.model.FraudEvaluationResult;
 import com.fraud.infrastructure.controller.dto.FraudEvaluationRequest;
 import com.fraud.infrastructure.controller.dto.FraudEvaluationResponse;
 import com.fraud.infrastructure.controller.mapper.FraudEvaluationRequestMapper;
+import jakarta.validation.Valid;
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +30,7 @@ public class FraudEvaluationController {
 	}
 
 	@PostMapping("/evaluate")
-	public ResponseEntity<FraudEvaluationResponse> evaluate(@RequestBody FraudEvaluationRequest request) {
+	public ResponseEntity<FraudEvaluationResponse> evaluate(@Valid @RequestBody FraudEvaluationRequest request) {
 		FraudEvaluationResult result = evaluateTransactionUseCase.execute(requestMapper.toDomain(request));
 
 		return ResponseEntity.ok(FraudEvaluationResponse.fromDomain(result));
