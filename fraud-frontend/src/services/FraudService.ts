@@ -21,7 +21,7 @@ export type EvaluationHistoryItem = {
 };
 
 const API_BASE_URL =
-  process.env.REACT_APP_API_BASE_URL || "http://localhost:8080";
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
 export async function evaluateTransaction(
   payload: EvaluateRequest
