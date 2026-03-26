@@ -1,4 +1,23 @@
 ﻿services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: fraud-postgres
+    environment:
+      POSTGRES_DB: frauddb
+      POSTGRES_USER: fraud
+      POSTGRES_PASSWORD: fraud
+    ports:
+      - "5432:5432"
+    networks:
+      - fraud-network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fraud"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   fraud-service:
     build:
       context: ./fraud-backend
@@ -6,6 +25,13 @@
     container_name: fraud-service
     ports:
       - "8080:8080"
+    environment:
+      - DB_URL=jdbc:postgresql://postgres:5432/frauddb
+      - DB_USERNAME=fraud
+      - DB_PASSWORD=fraud
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
       - fraud-network
 
@@ -26,3 +52,6 @@
 networks:
   fraud-network:
     driver: bridge
+
+volumes:
+  postgres_data:
