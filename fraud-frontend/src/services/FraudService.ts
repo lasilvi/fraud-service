@@ -20,8 +20,9 @@ export type EvaluationHistoryItem = {
   userCountry?: string;
 };
 
+// Use relative URL in production (nginx proxy), absolute in development
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+  import.meta.env.VITE_API_BASE_URL || "";
 
 export async function evaluateTransaction(
   payload: EvaluateRequest
