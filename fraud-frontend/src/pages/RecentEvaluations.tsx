@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   getRecentEvaluations,
-  EvaluationHistoryItem,
+  type EvaluationHistoryItem,
 } from "../services/FraudService";
 
 const RecentEvaluations: React.FC = () => {

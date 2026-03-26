@@ -1,7 +1,7 @@
-﻿import React, { FormEvent, useState } from "react";
+﻿import { type FormEvent, useState } from "react";
 import {
   evaluateTransaction,
-  EvaluateResponse,
+  type EvaluateResponse,
 } from "../services/FraudService";
 
 const EvaluateTransaction: React.FC = () => {
