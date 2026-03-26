@@ -1,53 +1,119 @@
-# React + TypeScript + Vite
+# Fraud Detection Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend application for the Fraud Detection Service built with React, TypeScript, and TailwindCSS.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- ✅ Evaluate transactions for fraud risk
+- ✅ View recent evaluation history
+- ✅ Responsive design with TailwindCSS
+- ✅ React Router for navigation
+- ✅ TypeScript for type safety
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React 19
+- TypeScript
+- Vite
+- TailwindCSS
+- React Router
+- Axios
 
-## Expanding the ESLint configuration
+## Development
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Prerequisites
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Node.js 20+
+- npm
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Installation
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Environment Variables
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
+Copy `.env.example` to `.env` and configure:
+
+```bash
+cp .env.example .env
+```
+
+```
+VITE_API_BASE_URL=http://localhost:8080
+```
+
+### Run Development Server
+
+```bash
+npm run dev
+```
+
+The app will be available at `http://localhost:3000`
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+### Preview Production Build
+
+```bash
+npm run preview
+```
+
+## Docker
+
+### Build and Run with Docker Compose
+
+From the project root:
+
+```bash
+docker-compose up --build
+```
+
+The frontend will be available at `http://localhost:3000`
+
+### Build Docker Image
+
+```bash
+docker build -t fraud-frontend .
+```
+
+### Run Docker Container
+
+```bash
+docker run -p 3000:80 -e VITE_API_BASE_URL=http://localhost:8080 fraud-frontend
+```
+
+## Project Structure
+
+```
+src/
+├── components/       # Reusable components
+├── pages/           # Page components
+│   ├── EvaluateTransaction.tsx
+│   └── RecentEvaluations.tsx
+├── services/        # API services
+│   └── FraudService.ts
+├── App.tsx          # Main app with routing
+└── main.tsx         # Entry point
+```
+
+## Available Pages
+
+- `/` - Evaluate Transaction
+- `/history` - Recent Evaluations History
+
+## API Endpoints
+
+The frontend consumes the following backend endpoints:
+
+- `POST /api/v1/fraud/evaluate` - Evaluate a transaction
+- `GET /api/v1/fraud/evaluations?limit=10` - Get recent evaluations
+
 import reactDom from 'eslint-plugin-react-dom'
 
 export default defineConfig([
