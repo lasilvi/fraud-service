@@ -1,25 +1,55 @@
 # Fraud Detection Frontend
 
+> 🎨 **Modern UI/UX** - Diseño profesional con TailwindCSS, animaciones suaves y responsive design
+
 Frontend application for the Fraud Detection Service built with React, TypeScript, and TailwindCSS.
 
-## Features
+## ✨ Features
 
-- ✅ Evaluate transactions for fraud risk
-- ✅ View recent evaluation history
-- ✅ Responsive design with TailwindCSS
-- ✅ React Router for navigation
-- ✅ TypeScript for type safety
+- ✅ **Evaluar transacciones** - Análisis en tiempo real con detección de fraude
+- ✅ **Historial de evaluaciones** - Dashboard con estadísticas y tabla interactiva
+- ✅ **Diseño moderno** - UI profesional con gradientes, sombras y microinteracciones
+- ✅ **Totalmente responsive** - Optimizado para mobile, tablet y desktop
+- ✅ **Sistema de diseño consistente** - Componentes reutilizables y paleta de colores
+- ✅ **Animaciones suaves** - Transiciones y efectos de entrada
+- ✅ **TypeScript** - Type safety completo
+- ✅ **Dark mode ready** - Preparado para tema oscuro
 
-## Tech Stack
+## 🎨 Design System
 
-- React 19
-- TypeScript
-- Vite
-- TailwindCSS
-- React Router
-- Axios
+Este proyecto implementa un sistema de diseño completo y moderno. Consulta [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) para:
 
-## Development
+- 🎨 Paleta de colores (primary, secondary, danger, success, warning)
+- ✍️ Tipografía (Inter, Poppins, JetBrains Mono)
+- 🧩 Componentes UI (Button, Card, Badge, Input, Table, etc.)
+- ✨ Animaciones y microinteracciones
+- 📱 Patrones responsive design
+- 📖 Guías de uso y mejores prácticas
+
+### Componentes Disponibles
+
+```tsx
+// UI Components
+Button, Card, CardHeader, CardTitle, CardContent, CardFooter
+Badge, Input, Table, TableHeader, TableBody, TableRow, TableHead, TableCell
+
+// Layout Components
+Layout, Navbar, PageHeader
+
+// Estado Components
+LoadingSpinner, ErrorMessage, EmptyState
+```
+
+## 🛠️ Tech Stack
+
+- **React 19** - UI Library
+- **TypeScript** - Type safety
+- **Vite** - Build tool
+- **TailwindCSS 4** - Styling
+- **React Router** - Navigation
+- **Axios** - HTTP client
+
+## 📦 Development
 
 ### Prerequisites
 
