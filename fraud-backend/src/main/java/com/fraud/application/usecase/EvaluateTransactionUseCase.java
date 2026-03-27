@@ -2,6 +2,7 @@ package com.fraud.application.usecase;
 
 import com.fraud.application.port.out.FraudEvaluationAuditPort;
 import com.fraud.application.port.out.FraudThresholdProvider;
+import com.fraud.application.port.out.SaveTransactionPort;
 import com.fraud.domain.model.FraudEvaluationResult;
 import com.fraud.domain.model.FraudReason;
 import com.fraud.domain.model.Transaction;
@@ -17,18 +18,23 @@ public class EvaluateTransactionUseCase {
 
 	private final FraudThresholdProvider fraudThresholdProvider;
 	private final FraudEvaluationAuditPort fraudEvaluationAuditPort;
+	private final SaveTransactionPort saveTransactionPort;
 	private final FraudDomainService fraudDomainService;
 
 	public EvaluateTransactionUseCase(
 		FraudThresholdProvider fraudThresholdProvider,
-		FraudEvaluationAuditPort fraudEvaluationAuditPort
+		FraudEvaluationAuditPort fraudEvaluationAuditPort,
+		SaveTransactionPort saveTransactionPort
 	) {
 		this.fraudThresholdProvider = fraudThresholdProvider;
 		this.fraudEvaluationAuditPort = fraudEvaluationAuditPort;
+		this.saveTransactionPort = saveTransactionPort;
 		this.fraudDomainService = new FraudDomainService();
 	}
 
 	public FraudEvaluationResult execute(Transaction transaction) {
+		saveTransactionPort.save(transaction);
+		
 		AmountRule amountRule = new AmountRule(fraudThresholdProvider.getThreshold());
 		LocationRule locationRule = new LocationRule();
 

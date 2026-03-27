@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import com.fraud.application.port.out.FraudEvaluationAuditPort;
 import com.fraud.application.port.out.FraudThresholdProvider;
+import com.fraud.application.port.out.SaveTransactionPort;
 import com.fraud.domain.model.FraudEvaluationResult;
 import com.fraud.domain.model.FraudReason;
 import com.fraud.domain.model.RiskLevel;
@@ -20,7 +21,8 @@ class EvaluateTransactionUseCaseTest {
     void shouldEvaluateAndPersistWhenRuleIsTriggered() {
         FraudThresholdProvider thresholdProvider = () -> BigDecimal.valueOf(15000);
         InMemoryAuditPort auditPort = new InMemoryAuditPort();
-        EvaluateTransactionUseCase useCase = new EvaluateTransactionUseCase(thresholdProvider, auditPort);
+        InMemoryTransactionPort transactionPort = new InMemoryTransactionPort();
+        EvaluateTransactionUseCase useCase = new EvaluateTransactionUseCase(thresholdProvider, auditPort, transactionPort);
 
         Transaction transaction = new Transaction("test-id-1", BigDecimal.valueOf(20000), "US", "US", "192.168.1.1", java.time.Instant.now());
         FraudEvaluationResult result = useCase.execute(transaction);
@@ -30,13 +32,15 @@ class EvaluateTransactionUseCaseTest {
         assertTrue(result.reasons().contains(FraudReason.HIGH_AMOUNT));
         assertNotNull(auditPort.savedResult);
         assertEquals(transaction, auditPort.savedTransaction);
+        assertEquals(transaction, transactionPort.savedTransaction);
     }
 
     @Test
     void shouldEvaluateLowRiskAndPersistWhenNoRuleIsTriggered() {
         FraudThresholdProvider thresholdProvider = () -> BigDecimal.valueOf(15000);
         InMemoryAuditPort auditPort = new InMemoryAuditPort();
-        EvaluateTransactionUseCase useCase = new EvaluateTransactionUseCase(thresholdProvider, auditPort);
+        InMemoryTransactionPort transactionPort = new InMemoryTransactionPort();
+        EvaluateTransactionUseCase useCase = new EvaluateTransactionUseCase(thresholdProvider, auditPort, transactionPort);
 
         Transaction transaction = new Transaction("test-id-2", BigDecimal.valueOf(3000), "CO", "CO", "192.168.1.2", java.time.Instant.now());
         FraudEvaluationResult result = useCase.execute(transaction);
@@ -56,5 +60,15 @@ class EvaluateTransactionUseCaseTest {
             this.savedTransaction = transaction;
             this.savedResult = result;
         }
+
+    private static final class InMemoryTransactionPort implements SaveTransactionPort {
+
+        private Transaction savedTransaction;
+
+        @Override
+        public void save(Transaction transaction) {
+            this.savedTransaction = transaction;
+        }
+    }
     }
 }
