@@ -43,7 +43,7 @@ export const ErrorMessage = ({
   retry,
   variant = "error",
   title,
-  fullWidth = false,
+  fullWidth = true,
 }: ErrorMessageProps) => {
   const styles = variantStyles[variant];
   const containerClass = fullWidth ? "w-full" : "max-w-2xl mx-auto";

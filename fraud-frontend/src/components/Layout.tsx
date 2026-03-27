@@ -12,20 +12,18 @@ interface LayoutProps {
 
 export const Layout = ({ children }: LayoutProps) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       {/* Navbar fijo en la parte superior */}
       <Navbar />
       
       {/* Contenido principal con animación de entrada */}
       <main className="flex-1 py-8 px-4 sm:px-6 lg:py-12 lg:px-8 animate-fade-in">
-        <div className="max-w-7xl mx-auto">
-          {children}
-        </div>
+        {children}
       </main>
       
-      {/* Footer moderno con gradiente sutil */}
-      <footer className="bg-gradient-to-r from-white via-gray-50 to-white border-t border-gray-200 mt-auto">
-        <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+      {/* Footer moderno */}
+      <footer className="bg-white border-t border-gray-200 mt-auto">
+        <div className="py-8 px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
             {/* Información de la empresa */}
             <div>

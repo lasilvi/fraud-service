@@ -114,7 +114,7 @@ export const EmptyState = ({
       {/* Descripción */}
       {description && (
         <p
-          className={`${textSizes[size].description} text-gray-500 max-w-md mx-auto leading-relaxed`}
+          className={`${textSizes[size].description} text-gray-500 leading-relaxed`}
         >
           {description}
         </p>

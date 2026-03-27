@@ -38,7 +38,7 @@ const EvaluateTransaction = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto animate-fade-in">
+    <div className="animate-fade-in">
       <PageHeader
         title="Evaluación de Transacciones"
         subtitle="Analiza transacciones en tiempo real con inteligencia artificial para detectar posibles fraudes"
