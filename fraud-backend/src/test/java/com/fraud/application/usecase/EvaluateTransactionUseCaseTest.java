@@ -60,6 +60,7 @@ class EvaluateTransactionUseCaseTest {
             this.savedTransaction = transaction;
             this.savedResult = result;
         }
+    }
 
     private static final class InMemoryTransactionPort implements SaveTransactionPort {
 
@@ -69,6 +70,5 @@ class EvaluateTransactionUseCaseTest {
         public void save(Transaction transaction) {
             this.savedTransaction = transaction;
         }
-    }
     }
 }
