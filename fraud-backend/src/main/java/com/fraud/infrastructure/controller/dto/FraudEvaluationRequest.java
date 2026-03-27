@@ -15,6 +15,7 @@ public record FraudEvaluationRequest(
 	String transactionCountry,
 	@NotBlank(message = "userCountry is required")
 	@Size(min = 2, max = 3, message = "userCountry must have length between 2 and 3")
-	String userCountry
+	String userCountry,
+	String ip
 ) {
 }

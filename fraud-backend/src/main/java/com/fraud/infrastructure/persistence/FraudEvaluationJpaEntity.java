@@ -21,6 +21,9 @@ public class FraudEvaluationJpaEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(nullable = false, length = 64)
+	private String transactionId;
+
 	@Column(nullable = false)
 	private BigDecimal amount;
 
@@ -29,6 +32,12 @@ public class FraudEvaluationJpaEntity {
 
 	@Column(nullable = false, length = 3)
 	private String userCountry;
+
+	@Column(length = 128)
+	private String ip;
+
+	@Column(nullable = false)
+	private Instant transactionTimestamp;
 
 	@Column(nullable = false)
 	private boolean suspicious;
