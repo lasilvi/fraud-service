@@ -15,3 +15,11 @@ spring:
     properties:
       hibernate:
         format_sql: true
+    show-sql: true
+
+logging:
+  level:
+    root: INFO
+    com.fraud: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
