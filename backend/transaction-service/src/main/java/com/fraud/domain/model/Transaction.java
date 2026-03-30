@@ -9,6 +9,7 @@ public record Transaction(
 	String transactionCountry,
 	String userCountry,
 	String ip,
-	Instant timestamp
+	Instant timestamp,
+	String userId
 ) {
 }

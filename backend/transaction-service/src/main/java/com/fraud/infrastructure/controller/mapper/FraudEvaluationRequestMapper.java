@@ -16,7 +16,8 @@ public class FraudEvaluationRequestMapper {
 			request.transactionCountry(),
 			request.userCountry(),
 			request.ip(),
-			Instant.now()
+			Instant.now(),
+			request.userId()
 		);
 	}
 }

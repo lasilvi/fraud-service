@@ -24,7 +24,7 @@ class EvaluateTransactionUseCaseTest {
         InMemoryTransactionPort transactionPort = new InMemoryTransactionPort();
         EvaluateTransactionUseCase useCase = new EvaluateTransactionUseCase(thresholdProvider, auditPort, transactionPort);
 
-        Transaction transaction = new Transaction("test-id-1", BigDecimal.valueOf(20000), "US", "US", "192.168.1.1", java.time.Instant.now());
+        Transaction transaction = new Transaction("test-id-1", BigDecimal.valueOf(20000), "US", "US", "192.168.1.1", java.time.Instant.now(), "user1");
         FraudEvaluationResult result = useCase.execute(transaction);
 
         assertTrue(result.suspicious());
@@ -42,7 +42,7 @@ class EvaluateTransactionUseCaseTest {
         InMemoryTransactionPort transactionPort = new InMemoryTransactionPort();
         EvaluateTransactionUseCase useCase = new EvaluateTransactionUseCase(thresholdProvider, auditPort, transactionPort);
 
-        Transaction transaction = new Transaction("test-id-2", BigDecimal.valueOf(3000), "CO", "CO", "192.168.1.2", java.time.Instant.now());
+        Transaction transaction = new Transaction("test-id-2", BigDecimal.valueOf(3000), "CO", "CO", "192.168.1.2", java.time.Instant.now(), "user2");
         FraudEvaluationResult result = useCase.execute(transaction);
 
         assertTrue(result.reasons().isEmpty());
