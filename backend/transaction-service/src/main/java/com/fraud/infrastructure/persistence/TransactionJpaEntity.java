@@ -33,4 +33,7 @@ public class TransactionJpaEntity {
 
 	@Column(nullable = false)
 	private Instant timestamp;
+
+	@Column(length = 128)
+	private String userId;
 }

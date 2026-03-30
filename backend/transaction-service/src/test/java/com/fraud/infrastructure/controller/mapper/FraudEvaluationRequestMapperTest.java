@@ -13,7 +13,7 @@ class FraudEvaluationRequestMapperTest {
 
 	@Test
 	void shouldMapRequestToDomainTransaction() {
-		FraudEvaluationRequest request = new FraudEvaluationRequest(BigDecimal.valueOf(12000), "US", "CO", "192.168.1.1");
+		FraudEvaluationRequest request = new FraudEvaluationRequest(BigDecimal.valueOf(12000), "US", "CO", "192.168.1.1", "user789");
 
 		Transaction result = mapper.toDomain(request);
 
@@ -21,5 +21,6 @@ class FraudEvaluationRequestMapperTest {
 		assertEquals(request.transactionCountry(), result.transactionCountry());
 		assertEquals(request.userCountry(), result.userCountry());
 		assertEquals(request.ip(), result.ip());
+		assertEquals(request.userId(), result.userId());
 	}
 }
