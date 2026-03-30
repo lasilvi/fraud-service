@@ -3,6 +3,7 @@ package com.fraud.infrastructure.controller.dto;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 
@@ -18,6 +19,7 @@ public record FraudEvaluationRequest(
 	String userCountry,
 	String ip,
 	@NotBlank(message = "userId is required")
+	@Pattern(regexp = "^[a-zA-Z0-9_-]+$", message = "userId contains invalid characters")
 	String userId
 ) {
 }

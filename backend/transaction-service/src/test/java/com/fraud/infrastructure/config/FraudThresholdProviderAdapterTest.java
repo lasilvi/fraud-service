@@ -30,7 +30,7 @@ class FraudThresholdProviderAdapterTest {
     }
 
     @Test
-    void getThreshold_shouldReturnDefaultWhenConfigServiceFails() {
+    void getThreshold_shouldDelegateToConfigServiceClient() {
         when(configServiceClient.getThreshold()).thenReturn(new BigDecimal("15000"));
 
         BigDecimal result = adapter.getThreshold();

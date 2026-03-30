@@ -9,13 +9,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
 public class ConfigServiceClient {
 
     private static final BigDecimal DEFAULT_THRESHOLD = new BigDecimal("15000");
     private static final String THRESHOLD_PATH = "/api/v1/config/threshold";
-    private static final String USER_LOCATION_PATH = "/api/v1/config/user-location/";
+    private static final String USER_LOCATION_PATH = "/api/v1/config/user-location";
 
     private final RestTemplate restTemplate;
     private final String baseUrl;
@@ -31,9 +32,11 @@ public class ConfigServiceClient {
     @SuppressWarnings("unchecked")
     public BigDecimal getThreshold() {
         try {
-            ResponseEntity<Map> response = restTemplate.getForEntity(
-                baseUrl + THRESHOLD_PATH, Map.class
-            );
+            String url = UriComponentsBuilder.fromHttpUrl(baseUrl)
+                .path(THRESHOLD_PATH)
+                .build()
+                .toUriString();
+            ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
             Map<String, Object> body = response.getBody();
             if (body == null || !body.containsKey("threshold")) {
                 return DEFAULT_THRESHOLD;
@@ -47,9 +50,13 @@ public class ConfigServiceClient {
     @SuppressWarnings("unchecked")
     public Optional<String> getUserLocation(String userId) {
         try {
-            ResponseEntity<Map> response = restTemplate.getForEntity(
-                baseUrl + USER_LOCATION_PATH + userId, Map.class
-            );
+            String url = UriComponentsBuilder.fromHttpUrl(baseUrl)
+                .path(USER_LOCATION_PATH)
+                .pathSegment(userId)
+                .build()
+                .encode()
+                .toUriString();
+            ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
             Map<String, Object> body = response.getBody();
             if (body == null || !body.containsKey("usualCountry")) {
                 return Optional.empty();
