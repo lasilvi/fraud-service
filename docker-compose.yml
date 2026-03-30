@@ -29,9 +29,12 @@
       - DB_URL=jdbc:postgresql://postgres:5432/frauddb
       - DB_USERNAME=fraud
       - DB_PASSWORD=fraud
+      - CONFIG_SERVICE_URL=http://config-service:8081
     depends_on:
       postgres:
         condition: service_healthy
+      config-service:
+        condition: service_started
     networks:
       - fraud-network
 
