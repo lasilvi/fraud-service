@@ -1,0 +1,23 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: config-service
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/frauddb}
+    username: ${DB_USERNAME:fraud}
+    password: ${DB_PASSWORD:fraud}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+
+logging:
+  level:
+    root: INFO
+    com.fraud.config: DEBUG
+    org.springframework.web: DEBUG
