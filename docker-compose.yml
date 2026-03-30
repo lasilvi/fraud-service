@@ -47,6 +47,23 @@
     networks:
       - fraud-network
 
+  config-service:
+    build:
+      context: ./backend/config-service
+      dockerfile: Dockerfile
+    container_name: config-service
+    ports:
+      - "8081:8081"
+    environment:
+      - DB_URL=jdbc:postgresql://postgres:5432/frauddb
+      - DB_USERNAME=fraud
+      - DB_PASSWORD=fraud
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - fraud-network
+
 networks:
   fraud-network:
     driver: bridge
