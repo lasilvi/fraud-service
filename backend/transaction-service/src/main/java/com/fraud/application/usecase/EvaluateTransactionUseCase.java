@@ -3,6 +3,7 @@ package com.fraud.application.usecase;
 import com.fraud.application.port.out.FraudEvaluationAuditPort;
 import com.fraud.application.port.out.FraudThresholdProvider;
 import com.fraud.application.port.out.SaveTransactionPort;
+import com.fraud.application.port.out.UserLocationProvider;
 import com.fraud.domain.model.FraudEvaluationResult;
 import com.fraud.domain.model.FraudReason;
 import com.fraud.domain.model.Transaction;
@@ -19,28 +20,34 @@ public class EvaluateTransactionUseCase {
 	private final FraudThresholdProvider fraudThresholdProvider;
 	private final FraudEvaluationAuditPort fraudEvaluationAuditPort;
 	private final SaveTransactionPort saveTransactionPort;
+	private final UserLocationProvider userLocationProvider;
 	private final FraudDomainService fraudDomainService;
 
 	public EvaluateTransactionUseCase(
 		FraudThresholdProvider fraudThresholdProvider,
 		FraudEvaluationAuditPort fraudEvaluationAuditPort,
-		SaveTransactionPort saveTransactionPort
+		SaveTransactionPort saveTransactionPort,
+		UserLocationProvider userLocationProvider
 	) {
 		this.fraudThresholdProvider = fraudThresholdProvider;
 		this.fraudEvaluationAuditPort = fraudEvaluationAuditPort;
 		this.saveTransactionPort = saveTransactionPort;
+		this.userLocationProvider = userLocationProvider;
 		this.fraudDomainService = new FraudDomainService();
 	}
 
 	public FraudEvaluationResult execute(Transaction transaction) {
 		saveTransactionPort.save(transaction);
-		
+
 		AmountRule amountRule = new AmountRule(fraudThresholdProvider.getThreshold());
 		LocationRule locationRule = new LocationRule();
 
+		String effectiveUserCountry = userLocationProvider.getUsualCountry(transaction.userId())
+			.orElse(transaction.userCountry());
+
 		Set<FraudReason> reasons = new HashSet<>();
 		amountRule.evaluate(transaction.amount()).ifPresent(reasons::add);
-		locationRule.evaluate(transaction.userCountry(), transaction.transactionCountry()).ifPresent(reasons::add);
+		locationRule.evaluate(effectiveUserCountry, transaction.transactionCountry()).ifPresent(reasons::add);
 
 		FraudEvaluationResult result = fraudDomainService.evaluate(reasons);
 		fraudEvaluationAuditPort.save(transaction, result);
