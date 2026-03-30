@@ -20,7 +20,7 @@
 
   fraud-service:
     build:
-      context: ./fraud-backend
+      context: ./backend/monolith
       dockerfile: Dockerfile
     container_name: fraud-service
     ports:
@@ -37,7 +37,7 @@
 
   fraud-frontend:
     build:
-      context: ./fraud-frontend
+      context: ./frontend
       dockerfile: Dockerfile
     container_name: fraud-frontend
     ports:
