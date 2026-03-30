@@ -31,7 +31,7 @@ class FraudEvaluationRequestValidationTest {
 		Set<ConstraintViolation<FraudEvaluationRequest>> violations = validator.validate(request);
 
 		assertFalse(violations.isEmpty());
-		assertEquals(4, violations.size());
+		assertEquals(5, violations.size());
 	}
 
 	@Test
