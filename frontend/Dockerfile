@@ -21,6 +21,15 @@ RUN echo 'server { \
     root /usr/share/nginx/html; \
     index index.html; \
     \
+    location /api/v1/config { \
+        proxy_pass http://config-service:8081; \
+        proxy_http_version 1.1; \
+        proxy_set_header Host $host; \
+        proxy_set_header X-Real-IP $remote_addr; \
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; \
+        proxy_set_header X-Forwarded-Proto $scheme; \
+    } \
+    \
     location /api { \
         proxy_pass http://fraud-service:8080; \
         proxy_http_version 1.1; \
