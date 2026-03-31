@@ -10,6 +10,7 @@ function App() {
     <Router>
       <Layout>
         <Routes>
+          <Route path="/" element={<EvaluateTransaction />} />
           <Route path={ROUTES.EVALUATE} element={<EvaluateTransaction />} />
           <Route path={ROUTES.HISTORY} element={<RecentEvaluations />} />
           <Route path={ROUTES.CONFIG} element={<Config />} />
