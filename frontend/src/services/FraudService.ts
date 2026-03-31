@@ -76,3 +76,59 @@ export async function getRecentEvaluations(
 
   return response.json();
 }
+
+export async function getThresholdConfig(): Promise<ThresholdConfigResponse> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/config/threshold`);
+
+  if (!response.ok) {
+    throw new Error("No se pudo obtener la configuración del umbral");
+  }
+
+  return response.json();
+}
+
+export async function updateThresholdConfig(
+  payload: ThresholdConfigRequest
+): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/config/threshold`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    throw new Error("No se pudo actualizar el umbral");
+  }
+}
+
+export async function getUserLocationConfig(
+  userId: string
+): Promise<UserLocationConfigResponse> {
+  const response = await fetch(
+    `${API_BASE_URL}/api/v1/config/user-location/${encodeURIComponent(userId)}`
+  );
+
+  if (!response.ok) {
+    throw new Error("No se pudo obtener la ubicación del usuario");
+  }
+
+  return response.json();
+}
+
+export async function saveUserLocationConfig(
+  payload: UserLocationConfigRequest
+): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/config/user-location`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    throw new Error("No se pudo guardar la ubicación del usuario");
+  }
+}
