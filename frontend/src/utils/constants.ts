@@ -35,4 +35,5 @@ export const ROUTES = {
   EVALUATE: "/",
   HISTORY: "/history",
   DASHBOARD: "/dashboard",
+  CONFIG: "/config",
 } as const;

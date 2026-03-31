@@ -20,6 +20,24 @@ export type EvaluationHistoryItem = {
   userCountry?: string;
 };
 
+export type ThresholdConfigResponse = {
+  threshold: number;
+};
+
+export type ThresholdConfigRequest = {
+  threshold: number;
+};
+
+export type UserLocationConfigResponse = {
+  userId: string;
+  usualCountry: string;
+};
+
+export type UserLocationConfigRequest = {
+  userId: string;
+  usualCountry: string;
+};
+
 // Use relative URL in production (nginx proxy), absolute in development
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "";
