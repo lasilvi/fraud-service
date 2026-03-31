@@ -1,4 +1,5 @@
 ﻿export type EvaluateRequest = {
+  userId: string;
   amount: number;
   transactionCountry: string;
   userCountry: string;
