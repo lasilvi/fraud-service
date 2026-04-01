@@ -2,7 +2,6 @@
   userId: string;
   amount: number;
   transactionCountry: string;
-  userCountry: string;
 };
 
 export type EvaluateResponse = {

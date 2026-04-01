@@ -19,7 +19,6 @@ const EvaluateTransaction = () => {
     userId: "",
     amount: 0,
     transactionCountry: "US",
-    userCountry: "CO",
   });
 
   const { evaluate, result, isLoading, error, reset } = useEvaluateTransaction();
@@ -34,7 +33,7 @@ const EvaluateTransaction = () => {
   };
 
   const handleReset = () => {
-    setFormData({ userId: "", amount: 0, transactionCountry: "US", userCountry: "CO" });
+    setFormData({ userId: "", amount: 0, transactionCountry: "US" });
     reset();
   };
 
@@ -107,32 +106,6 @@ const EvaluateTransaction = () => {
                   <select
                     value={formData.transactionCountry}
                     onChange={(e) => handleInputChange("transactionCountry", e.target.value)}
-                    className="w-full pl-10 px-4 py-2.5 border border-gray-300 rounded-lg bg-white focus:ring-4 focus:ring-primary-100 focus:border-primary-500 outline-none transition-all hover:border-gray-400"
-                    required
-                  >
-                    {COUNTRY_CODES.map((country) => (
-                      <option key={country.code} value={country.code}>
-                        {country.name} ({country.code})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  País del Usuario
-                  <span className="text-danger-500 ml-1">*</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  </div>
-                  <select
-                    value={formData.userCountry}
-                    onChange={(e) => handleInputChange("userCountry", e.target.value)}
                     className="w-full pl-10 px-4 py-2.5 border border-gray-300 rounded-lg bg-white focus:ring-4 focus:ring-primary-100 focus:border-primary-500 outline-none transition-all hover:border-gray-400"
                     required
                   >

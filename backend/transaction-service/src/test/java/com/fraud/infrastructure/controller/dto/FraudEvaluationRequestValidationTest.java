@@ -17,7 +17,7 @@ class FraudEvaluationRequestValidationTest {
 
 	@Test
 	void shouldHaveNoViolationsForValidRequest() {
-		FraudEvaluationRequest request = new FraudEvaluationRequest(BigDecimal.valueOf(1000), "US", "CO", "192.168.1.1", "user123");
+		FraudEvaluationRequest request = new FraudEvaluationRequest(BigDecimal.valueOf(1000), "US", "192.168.1.1", "user123");
 
 		Set<ConstraintViolation<FraudEvaluationRequest>> violations = validator.validate(request);
 
@@ -26,17 +26,17 @@ class FraudEvaluationRequestValidationTest {
 
 	@Test
 	void shouldReportViolationsForInvalidRequest() {
-		FraudEvaluationRequest request = new FraudEvaluationRequest(BigDecimal.valueOf(-1), "", null, null, null);
+		FraudEvaluationRequest request = new FraudEvaluationRequest(BigDecimal.valueOf(-1), "", null, null);
 
 		Set<ConstraintViolation<FraudEvaluationRequest>> violations = validator.validate(request);
 
 		assertFalse(violations.isEmpty());
-		assertEquals(5, violations.size());
+		assertEquals(4, violations.size());
 	}
 
 	@Test
 	void shouldRejectBlankUserId() {
-		FraudEvaluationRequest request = new FraudEvaluationRequest(BigDecimal.valueOf(1000), "US", "CO", "192.168.1.1", "");
+		FraudEvaluationRequest request = new FraudEvaluationRequest(BigDecimal.valueOf(1000), "US", "192.168.1.1", "");
 
 		Set<ConstraintViolation<FraudEvaluationRequest>> violations = validator.validate(request);
 
