@@ -30,7 +30,7 @@ public class FraudEvaluationJpaEntity {
 	@Column(nullable = false, length = 3)
 	private String transactionCountry;
 
-	@Column(nullable = false, length = 3)
+	@Column(length = 3)
 	private String userCountry;
 
 	@Column(length = 128)

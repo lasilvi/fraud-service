@@ -19,7 +19,6 @@ public class TransactionPersistenceAdapter implements SaveTransactionPort {
 		entity.setId(transaction.id());
 		entity.setAmount(transaction.amount());
 		entity.setTransactionCountry(transaction.transactionCountry());
-		entity.setUserCountry(transaction.userCountry());
 		entity.setIp(transaction.ip());
 		entity.setTimestamp(transaction.timestamp());
 		entity.setUserId(transaction.userId());

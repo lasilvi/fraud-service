@@ -25,9 +25,6 @@ public class TransactionJpaEntity {
 	@Column(nullable = false, length = 3)
 	private String transactionCountry;
 
-	@Column(nullable = false, length = 3)
-	private String userCountry;
-
 	@Column(length = 128)
 	private String ip;
 

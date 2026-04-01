@@ -7,7 +7,6 @@ public record Transaction(
 	String id,
 	BigDecimal amount,
 	String transactionCountry,
-	String userCountry,
 	String ip,
 	Instant timestamp,
 	String userId

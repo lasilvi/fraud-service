@@ -14,7 +14,6 @@ public class FraudEvaluationRequestMapper {
 			UUID.randomUUID().toString(),
 			request.amount(),
 			request.transactionCountry(),
-			request.userCountry(),
 			request.ip(),
 			Instant.now(),
 			request.userId()

@@ -14,9 +14,6 @@ public record FraudEvaluationRequest(
 	@NotBlank(message = "transactionCountry is required")
 	@Size(min = 2, max = 3, message = "transactionCountry must have length between 2 and 3")
 	String transactionCountry,
-	@NotBlank(message = "userCountry is required")
-	@Size(min = 2, max = 3, message = "userCountry must have length between 2 and 3")
-	String userCountry,
 	String ip,
 	@NotBlank(message = "userId is required")
 	@Pattern(regexp = "^[a-zA-Z0-9_-]+$", message = "userId contains invalid characters")
