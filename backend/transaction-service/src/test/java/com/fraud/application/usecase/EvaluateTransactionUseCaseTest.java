@@ -28,7 +28,7 @@ class EvaluateTransactionUseCaseTest {
         UserLocationProvider locationProvider = userId -> Optional.empty();
         EvaluateTransactionUseCase useCase = new EvaluateTransactionUseCase(thresholdProvider, auditPort, transactionPort, locationProvider);
 
-        Transaction transaction = new Transaction("test-id-1", BigDecimal.valueOf(20000), "US", "US", "192.168.1.1", java.time.Instant.now(), "user1");
+        Transaction transaction = new Transaction("test-id-1", BigDecimal.valueOf(20000), "US", "192.168.1.1", java.time.Instant.now(), "user1");
         FraudEvaluationResult result = useCase.execute(transaction);
 
         assertTrue(result.suspicious());
@@ -47,7 +47,7 @@ class EvaluateTransactionUseCaseTest {
         UserLocationProvider locationProvider = userId -> Optional.empty();
         EvaluateTransactionUseCase useCase = new EvaluateTransactionUseCase(thresholdProvider, auditPort, transactionPort, locationProvider);
 
-        Transaction transaction = new Transaction("test-id-2", BigDecimal.valueOf(3000), "CO", "CO", "192.168.1.2", java.time.Instant.now(), "user2");
+        Transaction transaction = new Transaction("test-id-2", BigDecimal.valueOf(3000), "CO", "192.168.1.2", java.time.Instant.now(), "user2");
         FraudEvaluationResult result = useCase.execute(transaction);
 
         assertTrue(result.reasons().isEmpty());
@@ -64,9 +64,8 @@ class EvaluateTransactionUseCaseTest {
         UserLocationProvider locationProvider = userId -> Optional.of("US");
         EvaluateTransactionUseCase useCase = new EvaluateTransactionUseCase(thresholdProvider, auditPort, transactionPort, locationProvider);
 
-        // userCountry in request is FR, but config says US. Transaction is in US.
-        // So effectiveUserCountry = US, transactionCountry = US → no UNUSUAL_LOCATION
-        Transaction transaction = new Transaction("test-id-3", BigDecimal.valueOf(3000), "US", "FR", "192.168.1.3", java.time.Instant.now(), "user123");
+        // Config says US. Transaction is in US → no UNUSUAL_LOCATION
+        Transaction transaction = new Transaction("test-id-3", BigDecimal.valueOf(3000), "US", "192.168.1.3", java.time.Instant.now(), "user123");
         FraudEvaluationResult result = useCase.execute(transaction);
 
         assertFalse(result.suspicious());
@@ -75,7 +74,7 @@ class EvaluateTransactionUseCaseTest {
     }
 
     @Test
-    void shouldFallbackToRequestUserCountry_whenUsualCountryNotFound() {
+    void shouldSkipLocationRule_whenUsualCountryNotConfigured() {
         FraudThresholdProvider thresholdProvider = () -> BigDecimal.valueOf(15000);
         InMemoryAuditPort auditPort = new InMemoryAuditPort();
         InMemoryTransactionPort transactionPort = new InMemoryTransactionPort();
@@ -83,24 +82,26 @@ class EvaluateTransactionUseCaseTest {
         UserLocationProvider locationProvider = userId -> Optional.empty();
         EvaluateTransactionUseCase useCase = new EvaluateTransactionUseCase(thresholdProvider, auditPort, transactionPort, locationProvider);
 
-        // userCountry=FR, transactionCountry=US, no config override → effectiveUserCountry=FR ≠ US → triggers UNUSUAL_LOCATION
-        Transaction transaction = new Transaction("test-id-4", BigDecimal.valueOf(3000), "US", "FR", "192.168.1.4", java.time.Instant.now(), "user456");
+        // No config for user → LocationRule is skipped, only AmountRule applies (3000 < 15000 → LOW)
+        Transaction transaction = new Transaction("test-id-4", BigDecimal.valueOf(3000), "US", "192.168.1.4", java.time.Instant.now(), "user456");
         FraudEvaluationResult result = useCase.execute(transaction);
 
-        assertTrue(result.suspicious());
-        assertEquals(RiskLevel.MEDIUM, result.riskLevel());
-        assertTrue(result.reasons().contains(FraudReason.UNUSUAL_LOCATION));
+        assertFalse(result.suspicious());
+        assertEquals(RiskLevel.LOW, result.riskLevel());
+        assertFalse(result.reasons().contains(FraudReason.UNUSUAL_LOCATION));
     }
 
     private static final class InMemoryAuditPort implements FraudEvaluationAuditPort {
 
         private Transaction savedTransaction;
         private FraudEvaluationResult savedResult;
+        private String savedUserCountry;
 
         @Override
-        public void save(Transaction transaction, FraudEvaluationResult result) {
+        public void save(Transaction transaction, FraudEvaluationResult result, String resolvedUserCountry) {
             this.savedTransaction = transaction;
             this.savedResult = result;
+            this.savedUserCountry = resolvedUserCountry;
         }
     }
 
