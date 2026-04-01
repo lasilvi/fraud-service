@@ -11,6 +11,7 @@ import com.fraud.domain.rules.AmountRule;
 import com.fraud.domain.rules.LocationRule;
 import com.fraud.domain.service.FraudDomainService;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import org.springframework.stereotype.Service;
 
@@ -40,17 +41,19 @@ public class EvaluateTransactionUseCase {
 		saveTransactionPort.save(transaction);
 
 		AmountRule amountRule = new AmountRule(fraudThresholdProvider.getThreshold());
-		LocationRule locationRule = new LocationRule();
 
-		String effectiveUserCountry = userLocationProvider.getUsualCountry(transaction.userId())
-			.orElse(transaction.userCountry());
+		Optional<String> usualCountry = userLocationProvider.getUsualCountry(transaction.userId());
 
 		Set<FraudReason> reasons = new HashSet<>();
 		amountRule.evaluate(transaction.amount()).ifPresent(reasons::add);
-		locationRule.evaluate(effectiveUserCountry, transaction.transactionCountry()).ifPresent(reasons::add);
+
+		if (usualCountry.isPresent()) {
+			LocationRule locationRule = new LocationRule();
+			locationRule.evaluate(usualCountry.get(), transaction.transactionCountry()).ifPresent(reasons::add);
+		}
 
 		FraudEvaluationResult result = fraudDomainService.evaluate(reasons);
-		fraudEvaluationAuditPort.save(transaction, result);
+		fraudEvaluationAuditPort.save(transaction, result, usualCountry.orElse(null));
 		return result;
 	}
 }
