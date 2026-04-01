@@ -20,12 +20,12 @@ public class FraudEvaluationPersistenceAdapter implements FraudEvaluationAuditPo
 	}
 
 	@Override
-	public void save(Transaction transaction, FraudEvaluationResult result) {
+	public void save(Transaction transaction, FraudEvaluationResult result, String resolvedUserCountry) {
 		FraudEvaluationJpaEntity entity = new FraudEvaluationJpaEntity();
 		entity.setTransactionId(transaction.id());
 		entity.setAmount(transaction.amount());
 		entity.setTransactionCountry(transaction.transactionCountry());
-		entity.setUserCountry(transaction.userCountry());
+		entity.setUserCountry(resolvedUserCountry);
 		entity.setIp(transaction.ip());
 		entity.setTransactionTimestamp(transaction.timestamp());
 		entity.setSuspicious(result.suspicious());

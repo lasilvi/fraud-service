@@ -5,5 +5,5 @@ import com.fraud.domain.model.Transaction;
 
 public interface FraudEvaluationAuditPort {
 
-	void save(Transaction transaction, FraudEvaluationResult result);
+	void save(Transaction transaction, FraudEvaluationResult result, String resolvedUserCountry);
 }
