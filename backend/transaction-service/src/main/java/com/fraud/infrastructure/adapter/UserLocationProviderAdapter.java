@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserLocationProviderAdapter implements UserLocationProvider {
 
+    private static final String DEFAULT_USER_ID = "default";
+
     private final ConfigServiceClient configServiceClient;
 
     public UserLocationProviderAdapter(ConfigServiceClient configServiceClient) {
@@ -16,6 +18,10 @@ public class UserLocationProviderAdapter implements UserLocationProvider {
 
     @Override
     public Optional<String> getUsualCountry(String userId) {
-        return configServiceClient.getUserLocation(userId);
+        Optional<String> location = configServiceClient.getUserLocation(userId);
+        if (location.isEmpty() && !DEFAULT_USER_ID.equals(userId)) {
+            return configServiceClient.getUserLocation(DEFAULT_USER_ID);
+        }
+        return location;
     }
 }
