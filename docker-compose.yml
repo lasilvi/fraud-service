@@ -67,6 +67,41 @@
     networks:
       - fraud-network
 
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: fraud-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - fraud-network
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  alert-service:
+    build:
+      context: ./backend/alert-service
+      dockerfile: Dockerfile
+    container_name: alert-service
+    ports:
+      - "8082:8082"
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - fraud-network
+
 networks:
   fraud-network:
     driver: bridge
