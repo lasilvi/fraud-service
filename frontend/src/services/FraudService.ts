@@ -132,3 +132,23 @@ export async function saveUserLocationConfig(
     throw new Error("No se pudo guardar la ubicación del usuario");
   }
 }
+
+export type FraudAlert = {
+  id: number;
+  transactionId: string;
+  userId: string;
+  amount: number;
+  riskLevel: string;
+  reasons: string[];
+  timestamp: string;
+};
+
+export async function getAlerts(): Promise<FraudAlert[]> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/alert/alerts`);
+
+  if (!response.ok) {
+    throw new Error("No se pudo obtener las alertas de fraude");
+  }
+
+  return response.json();
+}
