@@ -1,0 +1,22 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: alert-service
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+
+fraud:
+  alert:
+    exchange: fraud.exchange
+    queue: fraud.alert.queue
+    routing-key: fraud.alert
+
+logging:
+  level:
+    root: INFO
+    com.fraud.alert: DEBUG
