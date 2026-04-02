@@ -30,11 +30,17 @@
       - DB_USERNAME=fraud
       - DB_PASSWORD=fraud
       - CONFIG_SERVICE_URL=http://config-service:8081
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
     depends_on:
       postgres:
         condition: service_healthy
       config-service:
         condition: service_started
+      rabbitmq:
+        condition: service_healthy
     networks:
       - fraud-network
 

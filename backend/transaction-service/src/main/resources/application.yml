@@ -9,6 +9,11 @@ spring:
     url: ${DB_URL:jdbc:postgresql://localhost:5432/frauddb}
     username: ${DB_USERNAME:fraud}
     password: ${DB_PASSWORD:fraud}
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
   jpa:
     hibernate:
       ddl-auto: update
@@ -16,6 +21,11 @@ spring:
       hibernate:
         format_sql: true
     show-sql: true
+
+fraud:
+  alert:
+    exchange: fraud.exchange
+    routing-key: fraud.alert
 
 logging:
   level:
