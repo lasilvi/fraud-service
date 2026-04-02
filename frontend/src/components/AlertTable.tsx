@@ -19,7 +19,6 @@ export const AlertTable = ({ alerts }: AlertTableProps) => {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>ID Transacción</TableHead>
           <TableHead>Usuario</TableHead>
           <TableHead>Monto</TableHead>
           <TableHead>Nivel de Riesgo</TableHead>
@@ -30,11 +29,6 @@ export const AlertTable = ({ alerts }: AlertTableProps) => {
       <TableBody>
         {alerts.map((alert, index) => (
           <TableRow key={alert.id} striped index={index}>
-            <TableCell>
-              <span className="font-mono text-sm text-gray-700">
-                {alert.transactionId}
-              </span>
-            </TableCell>
             <TableCell>
               <span className="font-medium text-gray-900">{alert.userId}</span>
             </TableCell>

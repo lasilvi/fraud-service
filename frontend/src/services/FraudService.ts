@@ -135,7 +135,6 @@ export async function saveUserLocationConfig(
 
 export type FraudAlert = {
   id: number;
-  transactionId: string;
   userId: string;
   amount: number;
   riskLevel: string;
