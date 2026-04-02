@@ -5,42 +5,36 @@ import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
 
-    @Value("${fraud.alert.exchange}")
-    private String exchangeName;
-
-    @Value("${fraud.alert.queue}")
-    private String queueName;
-
-    @Value("${fraud.alert.routing-key}")
-    private String routingKey;
+    public static final String EXCHANGE_NAME = "fraud.exchange";
+    public static final String QUEUE_NAME = "fraud.alert.queue";
+    public static final String ROUTING_KEY = "fraud.alert";
 
     @Bean
     public TopicExchange fraudExchange() {
-        return new TopicExchange(exchangeName);
+        return new TopicExchange(EXCHANGE_NAME);
     }
 
     @Bean
     public Queue fraudAlertQueue() {
-        return new Queue(queueName, true);
+        return new Queue(QUEUE_NAME, true);
     }
 
     @Bean
     public Binding binding(Queue fraudAlertQueue, TopicExchange fraudExchange) {
-        return BindingBuilder
-                .bind(fraudAlertQueue)
+        return BindingBuilder.bind(fraudAlertQueue)
                 .to(fraudExchange)
-                .with(routingKey);
+                .with(ROUTING_KEY);
     }
 
     @Bean
-    public Jackson2JsonMessageConverter messageConverter() {
+    public MessageConverter jackson2JsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
     }
 }
