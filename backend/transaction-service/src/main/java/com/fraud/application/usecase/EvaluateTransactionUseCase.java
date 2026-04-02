@@ -1,5 +1,6 @@
 package com.fraud.application.usecase;
 
+import com.fraud.application.port.out.FraudAlertPublisherPort;
 import com.fraud.application.port.out.FraudEvaluationAuditPort;
 import com.fraud.application.port.out.FraudThresholdProvider;
 import com.fraud.application.port.out.SaveTransactionPort;
@@ -11,6 +12,7 @@ import com.fraud.domain.rules.AmountRule;
 import com.fraud.domain.rules.LocationRule;
 import com.fraud.domain.service.FraudDomainService;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.stereotype.Service;
@@ -22,18 +24,21 @@ public class EvaluateTransactionUseCase {
 	private final FraudEvaluationAuditPort fraudEvaluationAuditPort;
 	private final SaveTransactionPort saveTransactionPort;
 	private final UserLocationProvider userLocationProvider;
+	private final FraudAlertPublisherPort fraudAlertPublisherPort;
 	private final FraudDomainService fraudDomainService;
 
 	public EvaluateTransactionUseCase(
 		FraudThresholdProvider fraudThresholdProvider,
 		FraudEvaluationAuditPort fraudEvaluationAuditPort,
 		SaveTransactionPort saveTransactionPort,
-		UserLocationProvider userLocationProvider
+		UserLocationProvider userLocationProvider,
+		FraudAlertPublisherPort fraudAlertPublisherPort
 	) {
 		this.fraudThresholdProvider = fraudThresholdProvider;
 		this.fraudEvaluationAuditPort = fraudEvaluationAuditPort;
 		this.saveTransactionPort = saveTransactionPort;
 		this.userLocationProvider = userLocationProvider;
+		this.fraudAlertPublisherPort = fraudAlertPublisherPort;
 		this.fraudDomainService = new FraudDomainService();
 	}
 
@@ -54,6 +59,17 @@ public class EvaluateTransactionUseCase {
 
 		FraudEvaluationResult result = fraudDomainService.evaluate(reasons);
 		fraudEvaluationAuditPort.save(transaction, result, usualCountry.orElse(null));
+		if (result.suspicious()) {
+			List<String> reasonStrings = result.reasons().stream()
+				.map(Enum::name)
+				.toList();
+			fraudAlertPublisherPort.publish(
+				transaction.userId(),
+				transaction.amount(),
+				result.riskLevel().name(),
+				reasonStrings
+			);
+		}
 		return result;
 	}
 }
