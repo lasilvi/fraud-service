@@ -30,6 +30,15 @@ RUN echo 'server { \
         proxy_set_header X-Forwarded-Proto $scheme; \
     } \
     \
+    location /api/v1/alert { \
+        proxy_pass http://alert-service:8082; \
+        proxy_http_version 1.1; \
+        proxy_set_header Host $host; \
+        proxy_set_header X-Real-IP $remote_addr; \
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; \
+        proxy_set_header X-Forwarded-Proto $scheme; \
+    } \
+    \
     location /api { \
         proxy_pass http://fraud-service:8080; \
         proxy_http_version 1.1; \

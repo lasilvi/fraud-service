@@ -36,4 +36,5 @@ export const ROUTES = {
   HISTORY: "/history",
   DASHBOARD: "/dashboard",
   CONFIG: "/config",
+  ALERTS: "/alerts",
 } as const;
