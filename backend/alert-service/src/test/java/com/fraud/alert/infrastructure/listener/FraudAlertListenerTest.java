@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -65,14 +66,19 @@ class FraudAlertListenerTest {
 
         verify(saveFraudAlertPort).save(any(FraudAlert.class));
     }
-}
 
+    @Test
+    void shouldHandleLowRiskEventWithEmptyReasons() {
         FraudAlertEvent event = new FraudAlertEvent(
                 "user789",
                 new BigDecimal("100.00"),
                 "LOW",
                 List.of()
         );
+
+        when(saveFraudAlertPort.save(any(FraudAlert.class))).thenReturn(
+                new FraudAlert(3L, "user789", new BigDecimal("100.00"), "LOW",
+                        List.of(), null));
 
         // Act & Assert - should not throw exception
         assertDoesNotThrow(() -> listener.handleFraudAlert(event));
@@ -87,6 +93,10 @@ class FraudAlertListenerTest {
                 "LOW",
                 List.of()
         );
+
+        when(saveFraudAlertPort.save(any(FraudAlert.class))).thenReturn(
+                new FraudAlert(4L, "user000", BigDecimal.ZERO, "LOW",
+                        List.of(), null));
 
         // Act & Assert
         assertDoesNotThrow(() -> listener.handleFraudAlert(event));
