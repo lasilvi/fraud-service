@@ -2,9 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: 
-      - develop
-      - "feature/*"
+    branches: [ main ]
 
 jobs:
   build:
@@ -27,6 +25,9 @@ jobs:
       - name: Build config-service
         run: mvn -B clean compile -f backend/config-service/pom.xml
 
+      - name: Build alert-service
+        run: mvn -B clean compile -f backend/alert-service/pom.xml
+
   test:
     name: Test
     runs-on: ubuntu-latest
@@ -47,6 +48,9 @@ jobs:
 
       - name: Test config-service
         run: mvn -B test -f backend/config-service/pom.xml
+
+      - name: Test alert-service
+        run: mvn -B test -f backend/alert-service/pom.xml
 
   deploy:
     name: Deploy
@@ -69,6 +73,9 @@ jobs:
       - name: Package config-service
         run: mvn -B clean install -DskipTests -f backend/config-service/pom.xml
 
+      - name: Package alert-service
+        run: mvn -B clean install -DskipTests -f backend/alert-service/pom.xml
+
       - name: Upload transaction-service artifact
         uses: actions/upload-artifact@v4
         with:
@@ -80,3 +87,9 @@ jobs:
         with:
           name: config-service
           path: backend/config-service/target/*.jar
+
+      - name: Upload alert-service artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: alert-service
+          path: backend/alert-service/target/*.jar

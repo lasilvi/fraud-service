@@ -1,6 +1,7 @@
 package com.fraud.application.usecase;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -9,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
+import com.fraud.application.port.out.FraudAlertPublisherPort;
 import com.fraud.application.port.out.FraudEvaluationAuditPort;
 import com.fraud.application.port.out.FraudThresholdProvider;
 import com.fraud.application.port.out.SaveTransactionPort;
@@ -26,7 +28,8 @@ class EvaluateTransactionUseCaseTest {
         InMemoryAuditPort auditPort = new InMemoryAuditPort();
         InMemoryTransactionPort transactionPort = new InMemoryTransactionPort();
         UserLocationProvider locationProvider = userId -> Optional.empty();
-        EvaluateTransactionUseCase useCase = new EvaluateTransactionUseCase(thresholdProvider, auditPort, transactionPort, locationProvider);
+        InMemoryAlertPublisherPort alertPublisher = new InMemoryAlertPublisherPort();
+        EvaluateTransactionUseCase useCase = new EvaluateTransactionUseCase(thresholdProvider, auditPort, transactionPort, locationProvider, alertPublisher);
 
         Transaction transaction = new Transaction("test-id-1", BigDecimal.valueOf(20000), "US", "192.168.1.1", java.time.Instant.now(), "user1");
         FraudEvaluationResult result = useCase.execute(transaction);
@@ -45,7 +48,8 @@ class EvaluateTransactionUseCaseTest {
         InMemoryAuditPort auditPort = new InMemoryAuditPort();
         InMemoryTransactionPort transactionPort = new InMemoryTransactionPort();
         UserLocationProvider locationProvider = userId -> Optional.empty();
-        EvaluateTransactionUseCase useCase = new EvaluateTransactionUseCase(thresholdProvider, auditPort, transactionPort, locationProvider);
+        InMemoryAlertPublisherPort alertPublisher = new InMemoryAlertPublisherPort();
+        EvaluateTransactionUseCase useCase = new EvaluateTransactionUseCase(thresholdProvider, auditPort, transactionPort, locationProvider, alertPublisher);
 
         Transaction transaction = new Transaction("test-id-2", BigDecimal.valueOf(3000), "CO", "192.168.1.2", java.time.Instant.now(), "user2");
         FraudEvaluationResult result = useCase.execute(transaction);
@@ -62,7 +66,8 @@ class EvaluateTransactionUseCaseTest {
         InMemoryTransactionPort transactionPort = new InMemoryTransactionPort();
         // Config-service says user123's usual country is US
         UserLocationProvider locationProvider = userId -> Optional.of("US");
-        EvaluateTransactionUseCase useCase = new EvaluateTransactionUseCase(thresholdProvider, auditPort, transactionPort, locationProvider);
+        InMemoryAlertPublisherPort alertPublisher = new InMemoryAlertPublisherPort();
+        EvaluateTransactionUseCase useCase = new EvaluateTransactionUseCase(thresholdProvider, auditPort, transactionPort, locationProvider, alertPublisher);
 
         // Config says US. Transaction is in US → no UNUSUAL_LOCATION
         Transaction transaction = new Transaction("test-id-3", BigDecimal.valueOf(3000), "US", "192.168.1.3", java.time.Instant.now(), "user123");
@@ -80,7 +85,8 @@ class EvaluateTransactionUseCaseTest {
         InMemoryTransactionPort transactionPort = new InMemoryTransactionPort();
         // Config-service returns empty for this user
         UserLocationProvider locationProvider = userId -> Optional.empty();
-        EvaluateTransactionUseCase useCase = new EvaluateTransactionUseCase(thresholdProvider, auditPort, transactionPort, locationProvider);
+        InMemoryAlertPublisherPort alertPublisher = new InMemoryAlertPublisherPort();
+        EvaluateTransactionUseCase useCase = new EvaluateTransactionUseCase(thresholdProvider, auditPort, transactionPort, locationProvider, alertPublisher);
 
         // No config for user → LocationRule is skipped, only AmountRule applies (3000 < 15000 → LOW)
         Transaction transaction = new Transaction("test-id-4", BigDecimal.valueOf(3000), "US", "192.168.1.4", java.time.Instant.now(), "user456");
@@ -89,6 +95,59 @@ class EvaluateTransactionUseCaseTest {
         assertFalse(result.suspicious());
         assertEquals(RiskLevel.LOW, result.riskLevel());
         assertFalse(result.reasons().contains(FraudReason.UNUSUAL_LOCATION));
+    }
+
+    @Test
+    void shouldPublishAlertWhenTransactionIsSuspicious() {
+        FraudThresholdProvider thresholdProvider = () -> BigDecimal.valueOf(15000);
+        InMemoryAuditPort auditPort = new InMemoryAuditPort();
+        InMemoryTransactionPort transactionPort = new InMemoryTransactionPort();
+        UserLocationProvider locationProvider = userId -> Optional.empty();
+        InMemoryAlertPublisherPort alertPublisher = new InMemoryAlertPublisherPort();
+        EvaluateTransactionUseCase useCase = new EvaluateTransactionUseCase(thresholdProvider, auditPort, transactionPort, locationProvider, alertPublisher);
+
+        Transaction transaction = new Transaction("test-id-5", BigDecimal.valueOf(20000), "US", "192.168.1.5", java.time.Instant.now(), "user123");
+        FraudEvaluationResult result = useCase.execute(transaction);
+
+        assertTrue(result.suspicious());
+        assertTrue(alertPublisher.publishCalled);
+        assertEquals("user123", alertPublisher.lastUserId);
+        assertEquals(BigDecimal.valueOf(20000), alertPublisher.lastAmount);
+        assertEquals("MEDIUM", alertPublisher.lastRiskLevel);
+        assertTrue(alertPublisher.lastReasons.contains("HIGH_AMOUNT"));
+    }
+
+    @Test
+    void shouldNotPublishAlertWhenTransactionIsNotSuspicious() {
+        FraudThresholdProvider thresholdProvider = () -> BigDecimal.valueOf(15000);
+        InMemoryAuditPort auditPort = new InMemoryAuditPort();
+        InMemoryTransactionPort transactionPort = new InMemoryTransactionPort();
+        UserLocationProvider locationProvider = userId -> Optional.empty();
+        InMemoryAlertPublisherPort alertPublisher = new InMemoryAlertPublisherPort();
+        EvaluateTransactionUseCase useCase = new EvaluateTransactionUseCase(thresholdProvider, auditPort, transactionPort, locationProvider, alertPublisher);
+
+        Transaction transaction = new Transaction("test-id-6", BigDecimal.valueOf(3000), "CO", "192.168.1.6", java.time.Instant.now(), "user456");
+        FraudEvaluationResult result = useCase.execute(transaction);
+
+        assertFalse(result.suspicious());
+        assertFalse(alertPublisher.publishCalled);
+    }
+
+    private static final class InMemoryAlertPublisherPort implements FraudAlertPublisherPort {
+        private boolean publishCalled = false;
+        private String lastUserId;
+        private BigDecimal lastAmount;
+        private String lastRiskLevel;
+        private List<String> lastReasons;
+
+        @Override
+        public void publish(String userId, BigDecimal amount, String riskLevel, List<String> reasons) {
+            this.publishCalled = true;
+            this.lastUserId = userId;
+            this.lastAmount = amount;
+            this.lastRiskLevel = riskLevel;
+            this.lastReasons = reasons;
+        }
     }
 
     private static final class InMemoryAuditPort implements FraudEvaluationAuditPort {
