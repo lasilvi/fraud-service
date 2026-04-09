@@ -338,10 +338,3 @@ Cada microservicio sigue **Arquitectura Hexagonal** con separación en tres capa
 - **Aplicación**: Casos de uso y puertos de entrada/salida
 - **Infraestructura**: Controllers REST, entidades JPA, adaptadores de persistencia y mensajería
 
-## Licencia
-
-Proyecto académico privado para Sofka U.
-
-## Autores
-
-Desarrollado como proyecto académico para Sofka U.
